@@ -1,0 +1,117 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [main]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest
+            platform: mac
+            arch: arm64
+          - os: macos-13
+            platform: mac
+            arch: x64
+          - os: windows-latest
+            platform: win
+            arch: x64
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Build for macOS (arm64)
+        if: matrix.platform == 'mac' && matrix.arch == 'arm64'
+        run: npx electron-builder --mac --arm64 --config
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+
+      - name: Build for macOS (x64)
+        if: matrix.platform == 'mac' && matrix.arch == 'x64'
+        run: npx electron-builder --mac --x64 --config
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+
+      - name: Build for Windows
+        if: matrix.platform == 'win'
+        run: npx electron-builder --win --config
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload macOS arm64 artifacts
+        if: matrix.platform == 'mac' && matrix.arch == 'arm64'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ha-loop-desk-mac-arm64
+          path: |
+            release/*.dmg
+            release/*.zip
+          if-no-files-found: warn
+
+      - name: Upload macOS x64 artifacts
+        if: matrix.platform == 'mac' && matrix.arch == 'x64'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ha-loop-desk-mac-x64
+          path: |
+            release/*.dmg
+            release/*.zip
+          if-no-files-found: warn
+
+      - name: Upload Windows artifacts
+        if: matrix.platform == 'win'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ha-loop-desk-win-x64
+          path: |
+            release/*.exe
+          if-no-files-found: warn
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: List artifacts
+        run: find artifacts -type f
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            artifacts/**/*.dmg
+            artifacts/**/*.zip
+            artifacts/**/*.exe
+          draft: true
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
