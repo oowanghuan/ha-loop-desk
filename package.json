@@ -1,6 +1,6 @@
 {
   "name": "ha-loop-desk",
-  "version": "1.0.0",
+  "version": "1.3.0",
   "description": "HA Loop Desk - Human-AI Loop Desk 人机协作循环可视化工作台",
   "main": "./out/main/index.js",
   "type": "module",
