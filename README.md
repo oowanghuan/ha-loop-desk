@@ -6,32 +6,65 @@
 
 **HA Loop Desk 是 [AI Coding Template](https://github.com/oowanghuan/ai-coding-template) 的可视化伴侣工具。**
 
-如果你正在使用 AI Coding Template 进行人机协作开发，这个桌面应用可以帮你：
+### 解决的核心问题
 
-- **看到全局进度** - 多个功能模块的甘特图视图
-- **追踪每日工作** - Daily Standup 面板，昨天做了啥、今天做啥
-- **监控质量关卡** - Phase Gate 状态一目了然
+使用 Claude Code CLI 进行人机协作开发时，你需要：
+- 记住 10+ 个 Slash Commands（`/new-feature`、`/check-gate`、`/next-phase`...）
+- 记住 8 个开发阶段的流转顺序
+- 记住每个阶段需要产出什么文档
+- 记住 Phase Gate 的审批流程
+
+**这些「需要记在脑子里」的东西，HA Loop Desk 全部可视化出来了。**
+
+### 核心能力
+
+| 能力 | 说明 |
+|------|------|
+| **可视化工作流** | 8 阶段流程不用记，界面上直接看到当前在哪、下一步去哪 |
+| **点击即执行** | 不用手敲命令，点击按钮直接发送 Slash Command 到 CLI |
+| **进度一目了然** | 甘特图展示多功能模块进度，Daily Standup 面板展示每日工作 |
+| **Gate 状态可视** | Phase Gate 审批状态、阻断原因，全部可视化展示 |
+
+### 降低使用门槛
+
+```
+传统 CLI 使用方式                    HA Loop Desk 使用方式
+════════════════════                ════════════════════════
+
+1. 打开文档查命令                    1. 看界面，点按钮
+2. 手敲 /check-gate user-auth       2. 完成 ✓
+3. 看输出，理解状态
+4. 再查文档，下一步是什么
+5. 手敲 /next-phase user-auth
+...
+
+记忆负担：高                         记忆负担：几乎为零
+出错概率：高                         出错概率：低
+```
+
+**简单说**：
+- Claude Code CLI 是你的「手」— 执行具体操作
+- HA Loop Desk 是你的「眼睛」— 看清全局 + 「遥控器」— 点击操作
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                                                                 │
 │   AI Coding Template              HA Loop Desk                  │
 │   ════════════════════            ═══════════════               │
-│   框架 + 模板 + CLI               可视化工作台                   │
+│   框架 + 模板 + CLI               可视化 + 遥控器                │
 │                                                                 │
-│   docs/{feature}/                                               │
+│   Slash Commands                                                │
+│   ├── /new-feature         ←───   🖱️ 点击「新建功能」按钮       │
+│   ├── /check-gate          ←───   🖱️ 点击「检查 Gate」按钮      │
+│   ├── /next-phase          ←───   🖱️ 点击「下一阶段」按钮       │
+│   └── /end-day             ←───   🖱️ 点击「结束今天」按钮       │
+│                                                                 │
+│   进度数据                                                       │
 │   ├── 90_PROGRESS_LOG.yaml  ──→   📊 甘特图进度视图             │
-│   ├── PHASE_GATE_STATUS.yaml ──→  🚦 Phase Gate 状态            │
-│   └── ...                                                       │
-│                                                                 │
-│   Claude Code CLI                                               │
-│   ├── /start-day            ←──→  🔄 Daily Standup 面板         │
-│   └── /end-day              ──→   📝 每日总结                   │
+│   └── PHASE_GATE_STATUS.yaml ──→  🚦 Phase Gate 状态            │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
-
-**简单说**：Claude Code CLI 是你的「手」，HA Loop Desk 是你的「眼睛」。
 
 ## 2. 界面预览
 
