@@ -36,7 +36,7 @@ HA Loop Desk 通过预设配置支持多种场景：
 
 | 预设 | 适用场景 | 阶段示例 |
 |------|----------|----------|
-| software-dev | 软件开发 | Kickoff → Spec → Demo → Design → Code → Test → Deploy |
+| software-dev | 软件开发 | Foundation → Kickoff → Spec → Demo → Design → Code → Test → Deploy |
 | content-creation | 内容创作 | 选题 → 大纲 → 初稿 → 审校 → 发布 |
 | product-design | 产品设计 | 调研 → 需求 → 原型 → 评审 → 交付 |
 | *自定义* | 任意场景 | 根据需要配置 |
@@ -115,6 +115,13 @@ HA Loop Desk 的核心是**可配置的阶段系统**。你可以通过修改 `p
 ```yaml
 # presets/software-dev/preset.yaml
 phases:
+  - id: 0
+    name: "Foundation"
+    display_name: "基础建设"
+    required_outputs:
+      - "01_PROJECT_PROFILE.yaml"
+    gate_rules:
+      approvers: ["Architect"]
   - id: 1
     name: "Kickoff"
     display_name: "启动"
@@ -122,6 +129,7 @@ phases:
       - "10_CONTEXT.md"
     gate_rules:
       approvers: ["PM"]
+  # ... Phase 2-7
 ```
 
 这意味着 HA Loop Desk 不仅适用于软件开发，还可以用于任何需要**阶段化管理**的人机协作场景。
