@@ -51,23 +51,22 @@
 
 ### 前提条件
 
-你需要先有一个使用 [AI Coding Template](https://github.com/oowanghuan/ai-coding-template) 结构的项目：
+你需要先有一个使用 [AI Coding Template](https://github.com/oowanghuan/ai-coding-template) 结构的项目。如果还没有，请先按照 AI Coding Template 的文档创建项目。
 
-```bash
-# 如果还没有，先克隆模板
-git clone https://github.com/oowanghuan/ai-coding-template.git my-project
-cd my-project
+---
 
-# 安装 Claude Code 工具
-./scripts/init-claude-tools.sh --target=.
+### 3.1 让 AI 帮你开始（推荐）
 
-# 创建第一个功能模块
-# 在 Claude Code 中执行：/new-feature user-auth
-```
+> **给 AI 看的版本**：如果你正在使用 Claude Code，可以让 AI 直接读取初始化文档来配置 HA Loop Desk。
+> 只需说：「读取 CLAUDE_INIT_HALOOP.md 并帮我配置 HA Loop Desk」
 
-### 安装 HA Loop Desk
+AI 会读取 [CLAUDE_INIT_HALOOP.md](./CLAUDE_INIT_HALOOP.md) 并自动完成配置。
 
-从 [Releases](https://github.com/oowanghuan/ha-loop-desk/releases) 下载：
+---
+
+### 3.2 下载 Release 运行
+
+从 [Releases](https://github.com/oowanghuan/ha-loop-desk/releases) 下载适合你系统的版本：
 
 | 平台 | 下载文件 |
 |------|----------|
@@ -75,12 +74,36 @@ cd my-project
 | macOS (Intel) | `HA.Loop.Desk-x.x.x-x64.dmg` |
 | Windows | `HA.Loop.Desk-x.x.x-setup.exe` |
 
-### 使用流程
+**使用流程**：
 
-1. **启动 HA Loop Desk**
+1. **安装并启动 HA Loop Desk**
 2. **选择项目目录** - 选择你的 ai-coding-template 项目根目录
 3. **查看 Dashboard** - 看到所有功能模块的进度甘特图
 4. **进入 Workspace** - 点击某个功能模块，查看详细的阶段和任务
+
+---
+
+### 3.3 从源码运行
+
+如果你想参与开发或需要自定义功能：
+
+```bash
+# 克隆仓库
+git clone https://github.com/oowanghuan/ha-loop-desk.git
+cd ha-loop-desk
+
+# 安装依赖
+npm install
+
+# 启动开发模式
+npm run dev
+
+# 构建应用
+npm run build:mac   # macOS
+npm run build:win   # Windows
+```
+
+---
 
 ### 数据来源
 
@@ -125,11 +148,7 @@ HA Loop Desk 读取项目中的以下文件（由 Claude Code CLI 自动生成�
 └─────────────────┘     └─────────────────┘
 ```
 
-## 5. 给 AI 看的版本
-
-> 如果你正在使用 Claude Code，可以让 AI 读取 [CLAUDE.md](./CLAUDE.md) 来了解如何配合 HA Loop Desk 使用。
-
-## 6. 进阶：自定义工作流
+## 5. 进阶：自定义工作流
 
 > **注意**：以下内容是进阶功能。如果你只是想配合 AI Coding Template 使用，上面的内容已经足够。
 
@@ -170,32 +189,14 @@ phases:
 
 这意味着 HA Loop Desk 可以用于任何需要**阶段化管理**的人机协作场景，不仅限于软件开发。
 
-## 7. 从源码运行
-
-```bash
-# 克隆仓库
-git clone https://github.com/oowanghuan/ha-loop-desk.git
-cd ha-loop-desk
-
-# 安装依赖
-npm install
-
-# 启动开发模式
-npm run dev
-
-# 构建应用
-npm run build:mac   # macOS
-npm run build:win   # Windows
-```
-
-## 8. 技术栈
+## 6. 技术栈
 
 - **框架**: Electron + Vue 3
 - **UI**: Element Plus
 - **状态管理**: Pinia
 - **构建工具**: electron-vite
 
-## 9. 相关项目
+## 7. 相关项目
 
 | 项目 | 说明 |
 |------|------|

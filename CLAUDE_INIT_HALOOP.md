@@ -1,4 +1,4 @@
-# CLAUDE.md
+# CLAUDE_INIT_HALOOP.md
 # HA Loop Desk - AI 协作指南
 
 > **读者**：Claude Code (AI)
