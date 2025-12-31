@@ -1,6 +1,6 @@
 # HA Loop Desk
 
-> **Human-AI Loop Desk** - AI Coding Template 的可视化工作台
+> **Human-AI Loop Desk** - 人机协作循环可视化工作台
 
 ## 1. 这是什么？
 
