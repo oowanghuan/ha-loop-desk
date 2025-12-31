@@ -30,6 +30,20 @@ AI Coding Template 定义了一套人机协作开发框架（文档模板、开�
 - 🚦 **Phase Gate** - 质量关卡状态可视化
 - 🔗 **Claude Code 集成** - 与 CLI 双向通信
 
+## 界面预览
+
+### Dashboard - 项目总览
+
+![Dashboard](docs/images/dashboard.png)
+
+*甘特图视图 + Daily Standup 面板*
+
+### Workspace - 功能工作台
+
+![Workspace](docs/images/workspace.png)
+
+*阶段导航 + 工具面板 + 执行清单*
+
 ## 适用场景
 
 HA Loop Desk 通过预设配置支持多种场景：
