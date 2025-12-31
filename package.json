@@ -76,8 +76,7 @@
           "target": "dmg",
           "arch": ["x64", "arm64"]
         }
-      ],
-      "icon": "build/icon.icns"
+      ]
     },
     "win": {
       "target": [
@@ -85,13 +84,11 @@
           "target": "nsis",
           "arch": ["x64"]
         }
-      ],
-      "icon": "build/icon.ico"
+      ]
     },
     "linux": {
       "target": ["AppImage", "deb"],
-      "category": "Development",
-      "icon": "build/icon.png"
+      "category": "Development"
     },
     "nsis": {
       "oneClick": false,

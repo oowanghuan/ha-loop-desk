@@ -11,12 +11,13 @@ on:
 jobs:
   build:
     strategy:
+      fail-fast: false  # 一个平台失败不影响其他平台
       matrix:
         include:
           - os: macos-latest
             platform: mac
             arch: arm64
-          - os: macos-13
+          - os: macos-14
             platform: mac
             arch: x64
           - os: windows-latest
