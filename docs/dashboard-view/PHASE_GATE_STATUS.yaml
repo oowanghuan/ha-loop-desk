@@ -1,0 +1,197 @@
+# PHASE_GATE_STATUS.yaml
+# Phase Gate 运行态文件（gate_checker 更新此文件）
+# 功能模块：dashboard-view
+# 版本：v1.2
+
+meta:
+  feature: "dashboard-view"
+  last_updated: "2024-12-30T20:30:00+08:00"
+
+# ============================================================
+# Phase 1: Kickoff Gate - 运行状态
+# ============================================================
+phase_1_kickoff:
+  gate_state: passed  # pending | passed | blocked | skipped
+
+  gate_state_meta:
+    last_updated_at: "2024-12-30T20:45:00+08:00"
+    last_updated_by_command: "/approve-gate"
+    last_updated_by_user: "PM"
+
+  approvals:
+    - role: PM
+      user: "PM"
+      approved_at: "2024-12-30T20:45:00+08:00"
+
+  last_check:
+    checked_at: null
+    blocked_reason: null
+    check_results: []
+
+  check_history: []
+
+# ============================================================
+# Phase 2: Spec Gate - 运行状态
+# ============================================================
+phase_2_spec:
+  gate_state: passed
+
+  gate_state_meta:
+    last_updated_at: "2024-12-30T20:55:00+08:00"
+    last_updated_by_command: "/approve-gate"
+    last_updated_by_user: "Architect, PM"
+
+  approvals:
+    - role: Architect
+      user: "Architect"
+      approved_at: "2024-12-30T20:55:00+08:00"
+    - role: PM
+      user: "PM"
+      approved_at: "2024-12-30T20:55:00+08:00"
+
+  last_check:
+    checked_at: "2024-12-30T20:50:00+08:00"
+    blocked_reason: null
+    check_results:
+      - id: required_output_21_UI_FLOW_SPEC
+        status: passed
+        message: "21_UI_FLOW_SPEC.md 存在"
+      - id: spec_has_pages
+        status: passed
+        message: "找到 26 个页面/组件章节"
+      - id: spec_has_error_cases
+        status: passed
+        message: "找到错误处理和边界条件定义"
+
+  check_history:
+    - checked_at: "2024-12-30T20:50:00+08:00"
+      result: "quality_passed_awaiting_approval"
+
+# ============================================================
+# Phase 3: Demo Gate - 运行状态（跳过）
+# ============================================================
+phase_3_demo:
+  gate_state: skipped  # Dashboard 不需要单独 Demo
+
+  gate_state_meta:
+    last_updated_at: "2024-12-30T20:30:00+08:00"
+    last_updated_by_command: "/new-feature"
+    last_updated_by_user: "AI PE"
+
+  approvals:
+    - role: PM
+      user: null
+      approved_at: null
+
+  last_check:
+    checked_at: null
+    blocked_reason: null
+    check_results: []
+
+  check_history: []
+
+# ============================================================
+# Phase 4: Design Gate - 运行状态
+# ============================================================
+phase_4_design:
+  gate_state: passed  # Expert Review 修复后通过
+
+  gate_state_meta:
+    last_updated_at: "2024-12-30T21:30:00+08:00"
+    last_updated_by_command: "/approve-gate"
+    last_updated_by_user: "Architect"
+
+  approvals:
+    - role: Architect
+      user: "Architect"
+      approved_at: "2024-12-30T21:30:00+08:00"
+
+  last_check:
+    checked_at: "2024-12-30T21:00:00+08:00"
+    blocked_reason: null
+    check_results:
+      - id: required_output_40_DESIGN_FINAL
+        status: passed
+        message: "40_DESIGN_FINAL.md 存在"
+      - id: design_has_components
+        status: passed
+        message: "找到组件结构定义"
+      - id: design_has_data_flow
+        status: passed
+        message: "找到数据流和 composable 定义"
+
+  check_history:
+    - checked_at: "2024-12-30T21:00:00+08:00"
+      result: "quality_passed_awaiting_approval"
+
+# ============================================================
+# Phase 5: Code Gate - 运行状态
+# ============================================================
+phase_5_code:
+  gate_state: pending
+
+  gate_state_meta:
+    last_updated_at: null
+    last_updated_by_command: null
+    last_updated_by_user: null
+
+  approvals:
+    - role: Developer
+      user: null
+      approved_at: null
+    - role: Architect
+      user: null
+      approved_at: null
+
+  last_check:
+    checked_at: null
+    blocked_reason: null
+    check_results: []
+
+  check_history: []
+
+# ============================================================
+# Phase 6: Test Gate - 运行状态
+# ============================================================
+phase_6_test:
+  gate_state: pending
+
+  gate_state_meta:
+    last_updated_at: null
+    last_updated_by_command: null
+    last_updated_by_user: null
+
+  approvals:
+    - role: QA
+      user: null
+      approved_at: null
+
+  last_check:
+    checked_at: null
+    blocked_reason: null
+    check_results: []
+
+  check_history: []
+
+# ============================================================
+# Phase 7: Deploy Gate - 运行状态
+# ============================================================
+phase_7_deploy:
+  gate_state: pending
+
+  gate_state_meta:
+    last_updated_at: null
+    last_updated_by_command: null
+    last_updated_by_user: null
+
+  approvals:
+    - role: PM
+      user: null
+      approved_at: null
+
+  last_check:
+    checked_at: null
+    blocked_reason: null
+    check_results: []
+
+  check_history: []

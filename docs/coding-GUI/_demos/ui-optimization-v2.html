@@ -1,0 +1,1720 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HA Loop Desk - UI 优化方案 Demo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-primary: #0d1117;
+      --bg-secondary: #161b22;
+      --bg-tertiary: #1c2128;
+      --bg-hover: #21262d;
+      --border-color: #30363d;
+      --text-primary: #e6edf3;
+      --text-secondary: #8b949e;
+      --text-muted: #6e7681;
+      --accent-blue: #58a6ff;
+      --accent-green: #3fb950;
+      --accent-yellow: #d29922;
+      --accent-red: #f85149;
+      --accent-purple: #a371f7;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ========== Header ========== */
+    .header {
+      height: 48px;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 16px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .logo-icon {
+      width: 24px;
+      height: 24px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      border-radius: 6px;
+    }
+
+    .project-selector {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .project-selector:hover {
+      border-color: var(--accent-blue);
+    }
+
+    .feature-selector {
+      padding: 6px 12px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 13px;
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+
+    .header-spacer {
+      flex: 1;
+    }
+
+    /* 设计说明面板 */
+    .design-doc-btn {
+      padding: 6px 12px;
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .design-doc-btn:hover {
+      opacity: 0.9;
+    }
+
+    .design-doc-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 1000;
+      display: none;
+    }
+
+    .design-doc-overlay.visible {
+      display: block;
+    }
+
+    .design-doc-panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 520px;
+      height: 100vh;
+      background: var(--bg-secondary);
+      border-left: 1px solid var(--border-color);
+      z-index: 1001;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+    }
+
+    .design-doc-overlay.visible .design-doc-panel {
+      transform: translateX(0);
+    }
+
+    .design-doc-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .design-doc-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .design-doc-close {
+      width: 32px;
+      height: 32px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .design-doc-close:hover {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+    }
+
+    .design-doc-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .doc-section {
+      margin-bottom: 24px;
+    }
+
+    .doc-section-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent-blue);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .doc-section-content {
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--text-secondary);
+    }
+
+    .doc-section-content p {
+      margin-bottom: 8px;
+    }
+
+    .doc-section-content ul {
+      margin: 8px 0;
+      padding-left: 20px;
+    }
+
+    .doc-section-content li {
+      margin-bottom: 6px;
+    }
+
+    .doc-section-content code {
+      background: var(--bg-tertiary);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 12px;
+      color: var(--accent-green);
+    }
+
+    .doc-section-content .highlight {
+      color: var(--accent-yellow);
+    }
+
+    .doc-section-content .local {
+      color: var(--accent-green);
+    }
+
+    .doc-section-content .remote {
+      color: var(--accent-blue);
+    }
+
+    .data-source-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+      font-size: 12px;
+    }
+
+    .data-source-table th,
+    .data-source-table td {
+      padding: 8px 12px;
+      text-align: left;
+      border: 1px solid var(--border-color);
+    }
+
+    .data-source-table th {
+      background: var(--bg-tertiary);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .data-source-table td {
+      color: var(--text-secondary);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+    }
+
+    .badge.local {
+      background: rgba(63, 185, 80, 0.15);
+      color: var(--accent-green);
+    }
+
+    .badge.remote {
+      background: rgba(88, 166, 255, 0.15);
+      color: var(--accent-blue);
+    }
+
+    .badge.config {
+      background: rgba(163, 113, 247, 0.15);
+      color: var(--accent-purple);
+    }
+
+    /* ========== 状态条 (新增) ========== */
+    .status-bar {
+      height: 32px;
+      background: var(--bg-tertiary);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 24px;
+      font-size: 12px;
+    }
+
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-secondary);
+    }
+
+    .status-item.highlight {
+      color: var(--accent-yellow);
+    }
+
+    .status-item .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-green);
+    }
+
+    .status-item .dot.warning {
+      background: var(--accent-yellow);
+    }
+
+    /* ========== Phase Nav ========== */
+    .phase-nav {
+      height: 56px;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 4px;
+    }
+
+    .phase-item {
+      position: relative;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .phase-item:hover {
+      background: var(--bg-hover);
+    }
+
+    .phase-item.active {
+      background: rgba(88, 166, 255, 0.15);
+      color: var(--accent-blue);
+    }
+
+    .phase-item.completed {
+      color: var(--accent-green);
+    }
+
+    .phase-item .phase-name {
+      font-weight: 500;
+    }
+
+    .phase-item .phase-progress {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .phase-item.active .phase-progress {
+      color: var(--accent-blue);
+    }
+
+    .phase-item .check-icon {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      font-size: 10px;
+      color: var(--accent-green);
+    }
+
+    .phase-connector {
+      width: 24px;
+      height: 2px;
+      background: var(--border-color);
+    }
+
+    .phase-connector.completed {
+      background: var(--accent-green);
+    }
+
+    /* ========== Main Layout ========== */
+    .main-container {
+      display: flex;
+      height: calc(100vh - 48px - 32px - 56px);
+    }
+
+    /* ========== Left Panel ========== */
+    .left-panel {
+      width: 320px;
+      background: var(--bg-secondary);
+      border-right: 1px solid var(--border-color);
+      overflow-y: auto;
+      padding: 16px;
+    }
+
+    .panel-section {
+      margin-bottom: 16px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--bg-tertiary);
+      border-radius: 8px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .section-header:hover {
+      background: var(--bg-hover);
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .section-badge {
+      padding: 2px 8px;
+      background: var(--bg-primary);
+      border-radius: 10px;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .section-toggle {
+      font-size: 12px;
+      color: var(--text-muted);
+      transition: transform 0.2s;
+    }
+
+    .section-header.collapsed .section-toggle {
+      transform: rotate(-90deg);
+    }
+
+    .section-content {
+      padding: 12px 0;
+    }
+
+    .section-header.collapsed + .section-content {
+      display: none;
+    }
+
+    /* 文档项 */
+    .doc-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .doc-item:hover {
+      background: var(--bg-hover);
+    }
+
+    .doc-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .doc-icon.context { background: rgba(88, 166, 255, 0.15); color: var(--accent-blue); }
+    .doc-icon.spec { background: rgba(163, 113, 247, 0.15); color: var(--accent-purple); }
+    .doc-icon.progress { background: rgba(63, 185, 80, 0.15); color: var(--accent-green); }
+    .doc-icon.missing { background: rgba(248, 81, 73, 0.15); color: var(--accent-red); }
+
+    .doc-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .doc-name {
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .doc-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .doc-status {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .doc-status.exists {
+      background: rgba(63, 185, 80, 0.15);
+      color: var(--accent-green);
+    }
+
+    .doc-status.missing {
+      background: rgba(248, 81, 73, 0.15);
+      color: var(--accent-red);
+    }
+
+    .doc-action {
+      padding: 4px 10px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      font-size: 11px;
+      color: var(--accent-blue);
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .doc-action:hover {
+      background: var(--bg-hover);
+      border-color: var(--accent-blue);
+    }
+
+    /* 工具卡片 */
+    .tool-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 8px;
+    }
+
+    .tool-header {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .tool-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent-blue);
+    }
+
+    .tool-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .tool-tag {
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 10px;
+    }
+
+    .tool-tag.type {
+      background: rgba(88, 166, 255, 0.15);
+      color: var(--accent-blue);
+    }
+
+    .tool-tag.required {
+      background: rgba(210, 153, 34, 0.15);
+      color: var(--accent-yellow);
+    }
+
+    .tool-tag.owner {
+      background: rgba(163, 113, 247, 0.15);
+      color: var(--accent-purple);
+    }
+
+    .tool-tag.status {
+      background: rgba(63, 185, 80, 0.15);
+      color: var(--accent-green);
+    }
+
+    .tool-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+    }
+
+    .tool-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* 目标区块 */
+    .goals-list {
+      padding: 0 12px;
+    }
+
+    .goal-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 8px 0;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .goal-item::before {
+      content: "•";
+      color: var(--accent-blue);
+    }
+
+    /* ========== Right Panel ========== */
+    .right-panel {
+      flex: 1;
+      background: var(--bg-primary);
+      overflow-y: auto;
+      padding: 24px;
+    }
+
+    .execution-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .execution-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .execution-progress {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .progress-bar {
+      width: 200px;
+      height: 6px;
+      background: var(--bg-tertiary);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-green), var(--accent-blue));
+      border-radius: 3px;
+      transition: width 0.3s;
+    }
+
+    .progress-text {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* 下一步提示 (新增) */
+    .next-action-hint {
+      background: linear-gradient(135deg, rgba(88, 166, 255, 0.1), rgba(163, 113, 247, 0.1));
+      border: 1px solid rgba(88, 166, 255, 0.3);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .next-action-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--accent-blue);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .next-action-content {
+      flex: 1;
+    }
+
+    .next-action-label {
+      font-size: 11px;
+      color: var(--accent-blue);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .next-action-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .next-action-btn {
+      padding: 10px 20px;
+      background: var(--accent-blue);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .next-action-btn:hover {
+      opacity: 0.9;
+    }
+
+    /* 流程阶段容器 */
+    .workflow-stage {
+      position: relative;
+    }
+
+    /* 阶段标题 */
+    .stage-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      position: relative;
+    }
+
+    .stage-header.start {
+      background: linear-gradient(135deg, rgba(63, 185, 80, 0.15), rgba(63, 185, 80, 0.05));
+      border-color: rgba(63, 185, 80, 0.4);
+    }
+
+    .stage-header.execution {
+      background: linear-gradient(135deg, rgba(88, 166, 255, 0.15), rgba(88, 166, 255, 0.05));
+      border-color: rgba(88, 166, 255, 0.4);
+    }
+
+    .stage-header.end {
+      background: linear-gradient(135deg, rgba(163, 113, 247, 0.15), rgba(163, 113, 247, 0.05));
+      border-color: rgba(163, 113, 247, 0.4);
+    }
+
+    .stage-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .stage-icon.start {
+      background: var(--accent-green);
+      color: white;
+    }
+
+    .stage-icon.execution {
+      background: var(--accent-blue);
+      color: white;
+    }
+
+    .stage-icon.end {
+      background: var(--accent-purple);
+      color: white;
+    }
+
+    .stage-icon.completed {
+      background: var(--accent-green);
+    }
+
+    .stage-icon.pending {
+      background: var(--bg-tertiary);
+      border: 2px solid var(--border-color);
+      color: var(--text-muted);
+    }
+
+    .stage-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .stage-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .stage-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .stage-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .stage-status {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 12px;
+      white-space: nowrap;
+    }
+
+    .stage-status.completed {
+      background: rgba(63, 185, 80, 0.15);
+      color: var(--accent-green);
+    }
+
+    .stage-status.active {
+      background: rgba(88, 166, 255, 0.15);
+      color: var(--accent-blue);
+    }
+
+    .stage-status.pending {
+      background: var(--bg-tertiary);
+      color: var(--text-muted);
+    }
+
+    /* 阶段内容区 */
+    .stage-content {
+      margin: 16px 0;
+      padding: 16px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+    }
+
+    /* 任务分组 */
+    .task-group {
+      margin-bottom: 20px;
+    }
+
+    .task-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .task-group-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed var(--border-color);
+    }
+
+    .task-group-icon {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .task-group-title {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .task-group-count {
+      padding: 2px 8px;
+      background: var(--bg-tertiary);
+      border-radius: 10px;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    /* 阶段编号 */
+    .stage-number {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .stage-number.completed {
+      background: var(--accent-green);
+      color: white;
+    }
+
+    .stage-number.active {
+      background: var(--accent-blue);
+      color: white;
+    }
+
+    .stage-number.pending {
+      background: var(--bg-tertiary);
+      border: 2px solid var(--border-color);
+      color: var(--text-muted);
+    }
+
+    /* 流程阶段间距 */
+    .workflow-stage {
+      margin-bottom: 12px;
+    }
+
+    .workflow-stage:last-child {
+      margin-bottom: 0;
+    }
+
+    /* 任务卡片 */
+    .task-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      transition: all 0.2s;
+    }
+
+    .task-card:hover {
+      border-color: var(--text-muted);
+    }
+
+    .task-card.highlight {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 1px var(--accent-blue), 0 0 20px rgba(88, 166, 255, 0.15);
+    }
+
+    .task-card.completed {
+      opacity: 0.7;
+    }
+
+    .task-card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .task-status-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .task-status-icon.pending {
+      background: var(--bg-tertiary);
+      color: var(--text-muted);
+    }
+
+    .task-status-icon.ready {
+      background: rgba(88, 166, 255, 0.15);
+      color: var(--accent-blue);
+    }
+
+    .task-status-icon.running {
+      background: rgba(210, 153, 34, 0.15);
+      color: var(--accent-yellow);
+    }
+
+    .task-status-icon.completed {
+      background: rgba(63, 185, 80, 0.15);
+      color: var(--accent-green);
+    }
+
+    .task-info {
+      flex: 1;
+    }
+
+    .task-name {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .task-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .task-tag {
+      padding: 2px 8px;
+      background: var(--bg-tertiary);
+      border-radius: 4px;
+      font-size: 11px;
+    }
+
+    .task-tag.cc { color: var(--accent-blue); }
+    .task-tag.human { color: var(--accent-purple); }
+
+    .task-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .task-btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      border: none;
+    }
+
+    .task-btn.primary {
+      background: var(--accent-blue);
+      color: white;
+    }
+
+    .task-btn.primary:hover {
+      opacity: 0.9;
+    }
+
+    .task-btn.secondary {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-color);
+    }
+
+    .task-btn.secondary:hover {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+    }
+
+    .task-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* 任务描述 */
+    .task-description {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    /* 阻塞提示 */
+    .task-blocked {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: rgba(248, 81, 73, 0.1);
+      border-radius: 6px;
+      font-size: 12px;
+      color: var(--accent-red);
+      margin-top: 12px;
+    }
+
+    /* 任务进度条 */
+    .task-progress {
+      margin-top: 12px;
+    }
+
+    .task-progress-bar {
+      height: 4px;
+      background: var(--bg-tertiary);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .task-progress-fill {
+      height: 100%;
+      background: var(--accent-green);
+      transition: width 0.3s;
+    }
+
+    .task-progress-text {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* ========== 滚动条 ========== */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">
+      <div class="logo-icon"></div>
+      <span>HA Loop Desk</span>
+    </div>
+    <div class="project-selector">
+      <span>coding-gui-test-repo</span>
+      <span>▾</span>
+    </div>
+    <select class="feature-selector">
+      <option>测试功能</option>
+      <option>用户认证</option>
+    </select>
+    <div class="header-spacer"></div>
+    <button class="task-btn secondary">📋 Progress Log</button>
+    <button class="task-btn secondary">⚡ CLI 连接</button>
+    <button class="design-doc-btn" onclick="toggleDesignDoc()">📖 设计说明</button>
+  </header>
+
+  <!-- 状态条 (新增) -->
+  <div class="status-bar">
+    <div class="status-item">
+      <span class="dot"></span>
+      <span>Phase 4/7 Design</span>
+    </div>
+    <div class="status-item">
+      <span>任务进度: 2/5 完成</span>
+    </div>
+    <div class="status-item highlight">
+      <span class="dot warning"></span>
+      <span>1 项需要审批</span>
+    </div>
+    <div class="status-item">
+      <span>上次同步: 5分钟前</span>
+    </div>
+  </div>
+
+  <!-- Phase Nav -->
+  <nav class="phase-nav">
+    <div class="phase-item completed">
+      <span class="check-icon">✓</span>
+      <span class="phase-name">Kickoff</span>
+      <span class="phase-progress">100%</span>
+    </div>
+    <div class="phase-connector completed"></div>
+    <div class="phase-item completed">
+      <span class="check-icon">✓</span>
+      <span class="phase-name">Spec</span>
+      <span class="phase-progress">100%</span>
+    </div>
+    <div class="phase-connector completed"></div>
+    <div class="phase-item completed">
+      <span class="check-icon">✓</span>
+      <span class="phase-name">Demo</span>
+      <span class="phase-progress">100%</span>
+    </div>
+    <div class="phase-connector completed"></div>
+    <div class="phase-item active">
+      <span class="phase-name">Design</span>
+      <span class="phase-progress">40%</span>
+    </div>
+    <div class="phase-connector"></div>
+    <div class="phase-item">
+      <span class="phase-name">Code</span>
+      <span class="phase-progress">0%</span>
+    </div>
+    <div class="phase-connector"></div>
+    <div class="phase-item">
+      <span class="phase-name">Test</span>
+      <span class="phase-progress">0%</span>
+    </div>
+    <div class="phase-connector"></div>
+    <div class="phase-item">
+      <span class="phase-name">Deploy</span>
+      <span class="phase-progress">0%</span>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <div class="main-container">
+    <!-- Left Panel -->
+    <aside class="left-panel">
+      <!-- 工作区 (展开) -->
+      <div class="panel-section">
+        <div class="section-header">
+          <div class="section-title">
+            <span>📁</span>
+            <span>工作区</span>
+            <span class="section-badge">3 文件</span>
+          </div>
+          <span class="section-toggle">▼</span>
+        </div>
+        <div class="section-content">
+          <div class="doc-item">
+            <div class="doc-icon context">📄</div>
+            <div class="doc-info">
+              <div class="doc-name">10_CONTEXT.md</div>
+              <div class="doc-meta">功能上下文</div>
+            </div>
+            <button class="doc-action">查看</button>
+          </div>
+          <div class="doc-item">
+            <div class="doc-icon spec">📋</div>
+            <div class="doc-info">
+              <div class="doc-name">40_DESIGN.md</div>
+              <div class="doc-meta">设计文档</div>
+            </div>
+            <button class="doc-action">查看</button>
+          </div>
+          <div class="doc-item">
+            <div class="doc-icon progress">📊</div>
+            <div class="doc-info">
+              <div class="doc-name">90_PROGRESS_LOG.yaml</div>
+              <div class="doc-meta">进度日志</div>
+            </div>
+            <button class="doc-action">查看</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 本阶段目标 -->
+      <div class="panel-section">
+        <div class="section-header">
+          <div class="section-title">
+            <span>🎯</span>
+            <span>本阶段目标</span>
+          </div>
+          <span class="section-toggle">▼</span>
+        </div>
+        <div class="section-content">
+          <div class="goals-list">
+            <div class="goal-item">编写详细技术设计</div>
+            <div class="goal-item">定义接口契约</div>
+            <div class="goal-item">评估技术风险</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 上游输入 (折叠) -->
+      <div class="panel-section">
+        <div class="section-header collapsed">
+          <div class="section-title">
+            <span>📥</span>
+            <span>上游输入</span>
+            <span class="section-badge">来自 Phase 3</span>
+          </div>
+          <span class="section-toggle">▼</span>
+        </div>
+        <div class="section-content">
+          <div class="doc-item">
+            <div class="doc-icon spec">📋</div>
+            <div class="doc-info">
+              <div class="doc-name">需求规格</div>
+              <div class="doc-meta">Phase 2 产出</div>
+            </div>
+            <button class="doc-action">查看</button>
+          </div>
+          <div class="doc-item">
+            <div class="doc-icon context">💬</div>
+            <div class="doc-info">
+              <div class="doc-name">原型反馈</div>
+              <div class="doc-meta">Phase 3 收集</div>
+            </div>
+            <button class="doc-action">查看</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 参考资料 (折叠) -->
+      <div class="panel-section">
+        <div class="section-header collapsed">
+          <div class="section-title">
+            <span>📚</span>
+            <span>参考文档</span>
+            <span class="section-badge">2 模板</span>
+          </div>
+          <span class="section-toggle">▼</span>
+        </div>
+        <div class="section-content">
+          <div class="doc-item">
+            <div class="doc-icon context">📄</div>
+            <div class="doc-info">
+              <div class="doc-name">40_DESIGN_TEMPLATE.md</div>
+              <div class="doc-meta">设计文档模板</div>
+            </div>
+            <button class="doc-action">查看</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 可用工具 -->
+      <div class="panel-section">
+        <div class="section-header">
+          <div class="section-title">
+            <span>⚡</span>
+            <span>可用工具</span>
+          </div>
+          <span class="section-toggle">▼</span>
+        </div>
+        <div class="section-content">
+          <div class="tool-card">
+            <div class="tool-header">
+              <span class="tool-name">/expert-review</span>
+              <div class="tool-tags">
+                <span class="tool-tag type">slash-command</span>
+                <span class="tool-tag required">required</span>
+                <span class="tool-tag owner">CC</span>
+                <span class="tool-tag status">已实现</span>
+              </div>
+            </div>
+            <div class="tool-desc">发起专家评审</div>
+            <div class="tool-actions">
+              <button class="doc-action">使用说明</button>
+              <button class="doc-action">查看源码</button>
+            </div>
+          </div>
+          <div class="tool-card">
+            <div class="tool-header">
+              <span class="tool-name">/check-gate</span>
+              <div class="tool-tags">
+                <span class="tool-tag type">slash-command</span>
+                <span class="tool-tag owner">CC</span>
+                <span class="tool-tag status">已实现</span>
+              </div>
+            </div>
+            <div class="tool-desc">检查 Phase Gate 状态</div>
+            <div class="tool-actions">
+              <button class="doc-action">使用说明</button>
+              <button class="doc-action">查看源码</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Right Panel -->
+    <main class="right-panel">
+      <div class="execution-header">
+        <h2 class="execution-title">执行清单</h2>
+        <div class="execution-progress">
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 40%"></div>
+          </div>
+          <span class="progress-text">2/5 完成</span>
+        </div>
+      </div>
+
+      <!-- ========== 流程阶段 1: 每日开始 ========== -->
+      <div class="workflow-stage">
+        <div class="stage-header start">
+          <div class="stage-number completed">1</div>
+          <div class="stage-info">
+            <div class="stage-title">每日开始</div>
+            <div class="stage-subtitle">同步代码、检查依赖、规划当日工作</div>
+          </div>
+          <div class="stage-actions">
+            <span class="stage-status completed">✓ 已完成</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== 流程阶段 2: 执行流程 ========== -->
+      <div class="workflow-stage">
+        <div class="stage-header execution">
+          <div class="stage-number active">2</div>
+          <div class="stage-info">
+            <div class="stage-title">执行流程</div>
+            <div class="stage-subtitle">完成 Feature 任务 + Phase Gate 检查</div>
+          </div>
+          <div class="stage-actions">
+            <span class="stage-status active">进行中 2/5</span>
+          </div>
+        </div>
+
+        <!-- 执行流程内容 -->
+        <div class="stage-content">
+
+          <!-- 下一步提示 -->
+          <div class="next-action-hint">
+            <div class="next-action-icon">▶</div>
+            <div class="next-action-content">
+              <div class="next-action-label">建议下一步</div>
+              <div class="next-action-title">执行专家评审，获取技术方案改进建议</div>
+            </div>
+            <button class="next-action-btn">立即执行</button>
+          </div>
+
+          <!-- Feature 任务 -->
+          <div class="task-group">
+            <div class="task-group-header">
+              <span class="task-group-icon">📋</span>
+              <span class="task-group-title">Feature 任务</span>
+              <span class="task-group-count">2/2 完成</span>
+            </div>
+
+            <div class="task-card completed">
+              <div class="task-card-header">
+                <div class="task-status-icon completed">✓</div>
+                <div class="task-info">
+                  <div class="task-name">1. 编写技术设计文档</div>
+                  <div class="task-meta">
+                    <span>40_DESIGN.md 完成</span>
+                  </div>
+                </div>
+                <div class="task-actions">
+                  <button class="task-btn secondary">查看</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="task-card completed">
+              <div class="task-card-header">
+                <div class="task-status-icon completed">✓</div>
+                <div class="task-info">
+                  <div class="task-name">2. 定义 API 接口</div>
+                  <div class="task-meta">
+                    <span>API_SPEC.yaml 完成</span>
+                  </div>
+                </div>
+                <div class="task-actions">
+                  <button class="task-btn secondary">查看</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Phase Gate 检查 -->
+          <div class="task-group">
+            <div class="task-group-header">
+              <span class="task-group-icon">🚪</span>
+              <span class="task-group-title">Phase Gate</span>
+              <span class="task-group-count">0/3 完成</span>
+            </div>
+
+            <div class="task-card highlight">
+              <div class="task-card-header">
+                <div class="task-status-icon ready">▶</div>
+                <div class="task-info">
+                  <div class="task-name">专家评审</div>
+                  <div class="task-meta">
+                    <span class="task-tag cc">CC</span>
+                    <span>/expert-review</span>
+                  </div>
+                </div>
+                <div class="task-actions">
+                  <button class="task-btn primary">在终端中打开</button>
+                </div>
+              </div>
+              <div class="task-description">
+                发起技术方案评审，获取专家改进建议
+              </div>
+            </div>
+
+            <div class="task-card">
+              <div class="task-card-header">
+                <div class="task-status-icon pending">○</div>
+                <div class="task-info">
+                  <div class="task-name">Gate 检查</div>
+                  <div class="task-meta">
+                    <span class="task-tag cc">CC</span>
+                    <span>/check-gate</span>
+                  </div>
+                </div>
+                <div class="task-actions">
+                  <button class="task-btn secondary" disabled>执行</button>
+                </div>
+              </div>
+              <div class="task-blocked">
+                <span>🔒</span>
+                <span>等待专家评审完成</span>
+              </div>
+            </div>
+
+            <div class="task-card">
+              <div class="task-card-header">
+                <div class="task-status-icon pending">○</div>
+                <div class="task-info">
+                  <div class="task-name">Gate 审批</div>
+                  <div class="task-meta">
+                    <span class="task-tag human">Human</span>
+                    <span>/approve-gate</span>
+                  </div>
+                </div>
+                <div class="task-actions">
+                  <button class="task-btn secondary" disabled>审批</button>
+                </div>
+              </div>
+              <div class="task-blocked">
+                <span>🔒</span>
+                <span>等待 Gate 检查通过</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ========== 流程阶段 3: 每日结束 ========== -->
+      <div class="workflow-stage">
+        <div class="stage-header end">
+          <div class="stage-number pending">3</div>
+          <div class="stage-info">
+            <div class="stage-title">每日结束</div>
+            <div class="stage-subtitle">生成日报、提交代码、记录进度</div>
+          </div>
+          <div class="stage-actions">
+            <span class="stage-status pending">待执行</span>
+            <button class="task-btn secondary">执行</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- 设计说明面板 -->
+  <div class="design-doc-overlay" id="designDocOverlay" onclick="toggleDesignDoc()">
+    <div class="design-doc-panel" onclick="event.stopPropagation()">
+      <div class="design-doc-header">
+        <div class="design-doc-title">📖 HA Loop Desk 设计说明</div>
+        <button class="design-doc-close" onclick="toggleDesignDoc()">✕</button>
+      </div>
+      <div class="design-doc-content">
+
+        <!-- 整体架构 -->
+        <div class="doc-section">
+          <div class="doc-section-title">🏗️ 整体架构</div>
+          <div class="doc-section-content">
+            <p>HA Loop Desk 是一个 <strong>Electron 桌面应用</strong>，用于管理 AI 协作开发流程。采用 Vue 3 + TypeScript 构建。</p>
+            <p>核心理念：<span class="highlight">本地优先，线上同步</span></p>
+            <ul>
+              <li>本地文件通过 <code>Schema Discovery</code> 自动发现</li>
+              <li>线上文件通过 <code>GitHub Proxy</code> 获取</li>
+              <li>配置文件统一存放在项目的 <code>CC_COLLABORATION/</code> 目录</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 数据来源 -->
+        <div class="doc-section">
+          <div class="doc-section-title">📊 数据来源对照表</div>
+          <div class="doc-section-content">
+            <table class="data-source-table">
+              <thead>
+                <tr>
+                  <th>UI 区域</th>
+                  <th>数据来源</th>
+                  <th>配置/存储位置</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>已发现文档</td>
+                  <td><span class="badge local">本地</span></td>
+                  <td><code>docs/{feature}/</code> 目录扫描</td>
+                </tr>
+                <tr>
+                  <td>本阶段目标</td>
+                  <td><span class="badge config">配置</span></td>
+                  <td><code>PHASE_GATE.yaml</code> → objectives</td>
+                </tr>
+                <tr>
+                  <td>上游输入</td>
+                  <td><span class="badge config">配置</span></td>
+                  <td><code>PHASE_GATE.yaml</code> → inputs</td>
+                </tr>
+                <tr>
+                  <td>参考文档</td>
+                  <td><span class="badge local">本地</span></td>
+                  <td><code>CC_COLLABORATION/03_templates/</code></td>
+                </tr>
+                <tr>
+                  <td>可用工具</td>
+                  <td><span class="badge config">配置</span></td>
+                  <td><code>PHASE_GATE.yaml</code> → available_tools</td>
+                </tr>
+                <tr>
+                  <td>执行清单</td>
+                  <td><span class="badge local">本地</span> + <span class="badge config">配置</span></td>
+                  <td>框架步骤: <code>02_config/framework_steps.yaml</code><br>任务: <code>90_PROGRESS_LOG.yaml</code></td>
+                </tr>
+                <tr>
+                  <td>文档预览</td>
+                  <td><span class="badge local">本地</span> / <span class="badge remote">GitHub</span></td>
+                  <td>优先本地，fallback 到 GitHub</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Phase 配置 -->
+        <div class="doc-section">
+          <div class="doc-section-title">🔄 Phase 阶段配置</div>
+          <div class="doc-section-content">
+            <p>开发流程分为 <strong>8 个阶段</strong>（Phase 0-7）：</p>
+            <ul>
+              <li><code>Phase 0</code> - Foundation（基础设施）</li>
+              <li><code>Phase 1</code> - Kickoff（启动）</li>
+              <li><code>Phase 2</code> - Spec（规格定义）</li>
+              <li><code>Phase 3</code> - Demo（原型演示）</li>
+              <li><code>Phase 4</code> - Design（详细设计）</li>
+              <li><code>Phase 5</code> - Code（编码实现）</li>
+              <li><code>Phase 6</code> - Test（测试验证）</li>
+              <li><code>Phase 7</code> - Deploy（部署发布）</li>
+            </ul>
+            <p>每个 Phase 的配置在 <code>PHASE_GATE.yaml</code> 中定义：</p>
+            <ul>
+              <li><code>inputs</code> - 上游依赖（前置 Phase 的产出）</li>
+              <li><code>objectives</code> - 本阶段目标</li>
+              <li><code>required_outputs</code> - 必须产出的文档</li>
+              <li><code>available_tools</code> - 可用的工具/命令</li>
+              <li><code>exit_criteria</code> - 退出条件</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 执行清单 -->
+        <div class="doc-section">
+          <div class="doc-section-title">📋 执行清单配置</div>
+          <div class="doc-section-content">
+            <p>执行清单由两部分组成：</p>
+            <p><strong>1. 框架步骤（Framework Steps）</strong></p>
+            <ul>
+              <li>配置位置：<code>CC_COLLABORATION/02_config/framework_steps.yaml</code></li>
+              <li>包含：<code>/start-day</code>, <code>/expert-review</code>, <code>/check-gate</code>, <code>/end-day</code> 等</li>
+              <li>按 <code>position</code> 分组：<code>before_tasks</code>, <code>after_tasks</code>, <code>end</code></li>
+            </ul>
+            <p><strong>2. Feature 任务</strong></p>
+            <ul>
+              <li>配置位置：<code>docs/{feature}/90_PROGRESS_LOG.yaml</code></li>
+              <li>每个任务包含：<code>id</code>, <code>task</code>, <code>status</code>, <code>priority</code></li>
+              <li>状态流转：<code>pending</code> → <code>wip</code> → <code>done</code></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 文件维护 -->
+        <div class="doc-section">
+          <div class="doc-section-title">🔧 如何维护/修改</div>
+          <div class="doc-section-content">
+            <p><strong>修改阶段配置：</strong></p>
+            <ul>
+              <li>编辑 <code>docs/{feature}/PHASE_GATE.yaml</code></li>
+              <li>修改对应 phase 的 inputs/objectives/outputs</li>
+            </ul>
+            <p><strong>添加新工具：</strong></p>
+            <ul>
+              <li>在 <code>PHASE_GATE.yaml</code> 的 <code>available_tools</code> 中添加</li>
+              <li>实现对应的 skill 文件（<code>.claude/skills/</code>）</li>
+            </ul>
+            <p><strong>修改框架步骤：</strong></p>
+            <ul>
+              <li>编辑 <code>CC_COLLABORATION/02_config/framework_steps.yaml</code></li>
+              <li>支持添加/修改/删除步骤</li>
+            </ul>
+            <p><strong>添加参考模板：</strong></p>
+            <ul>
+              <li>放入 <code>CC_COLLABORATION/03_templates/0X_{phase}/</code></li>
+              <li>文件名包含 <code>_TEMPLATE</code> 会被自动识别</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Schema Discovery -->
+        <div class="doc-section">
+          <div class="doc-section-title">🔍 Schema Discovery 机制</div>
+          <div class="doc-section-content">
+            <p>自动发现本地文件的机制：</p>
+            <ul>
+              <li><strong>Feature Scanner</strong> - 扫描 <code>docs/</code> 目录发现 Feature</li>
+              <li><strong>Template Scanner</strong> - 扫描 <code>03_templates/</code> 发现模板</li>
+              <li><strong>Output Matcher</strong> - 匹配 PHASE_GATE 定义的 outputs</li>
+            </ul>
+            <p>识别规则：</p>
+            <ul>
+              <li>目录名 <code>0X_name</code> → Phase X 的模板</li>
+              <li>文件名含 <code>_TEMPLATE</code> → 模板文件</li>
+              <li>文件名 <code>10_CONTEXT.md</code> → 上下文文档</li>
+              <li>文件名 <code>90_PROGRESS_LOG.yaml</code> → 进度日志</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 折叠展开功能
+    document.querySelectorAll('.section-header').forEach(header => {
+      header.addEventListener('click', () => {
+        header.classList.toggle('collapsed');
+      });
+    });
+
+    // 设计说明面板切换
+    function toggleDesignDoc() {
+      const overlay = document.getElementById('designDocOverlay');
+      overlay.classList.toggle('visible');
+    }
+
+    // ESC 关闭面板
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.getElementById('designDocOverlay').classList.remove('visible');
+      }
+    });
+  </script>
+</body>
+</html>

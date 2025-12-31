@@ -1,0 +1,172 @@
+# 90_PROGRESS_LOG.yaml
+# 功能模块：Dashboard View
+# 最后更新：2024-12-30T20:30:00+08:00
+
+meta:
+  feature: dashboard-view
+  feature_name: "Dashboard View"
+  current_phase: 5  # Code
+  status: wip
+  owner: "AI PE"
+  started_at: 2024-12-30
+  last_updated: 2024-12-30T21:30:00+08:00
+
+# ============================================================
+# Phase 1: Kickoff（功能启动）- 进行中
+# ============================================================
+phase_1_kickoff:
+  status: done
+  tasks:
+    - id: KICK-001
+      task: "创建功能目录 docs/dashboard-view/"
+      status: done
+      completed_at: 2024-12-30
+
+    - id: KICK-002
+      task: "编写 10_CONTEXT.md 功能上下文"
+      status: done
+      completed_at: 2024-12-30
+
+    - id: KICK-003
+      task: "创建 90_PROGRESS_LOG.yaml"
+      status: done
+      completed_at: 2024-12-30
+
+    - id: KICK-004
+      task: "PM 审批 Kickoff Gate"
+      status: done
+      completed_at: 2024-12-30
+
+# ============================================================
+# Phase 2: Spec（需求规格）- 待开始
+# ============================================================
+phase_2_spec:
+  status: done
+  tasks:
+    - id: SPEC-001
+      task: "编写 21_UI_FLOW_SPEC.md UI 流程规格"
+      status: done
+      completed_at: 2024-12-30
+      notes: "定义 Dashboard 页面结构和交互流程"
+
+    - id: SPEC-002
+      task: "定义甘特图组件规格"
+      status: done
+      completed_at: 2024-12-30
+      notes: "已在 21_UI_FLOW_SPEC.md 第 3.2 节定义"
+
+    - id: SPEC-003
+      task: "定义 Feature 卡片规格"
+      status: done
+      completed_at: 2024-12-30
+      notes: "已在 21_UI_FLOW_SPEC.md 第 3.3 节定义"
+
+    - id: SPEC-004
+      task: "Architect + PM 审批 Spec Gate"
+      status: done
+      completed_at: 2024-12-30
+
+# ============================================================
+# Phase 4: Design（详细设计）- 待开始
+# ============================================================
+phase_4_design:
+  status: done
+  tasks:
+    - id: DESIGN-001
+      task: "编写 40_DESIGN_FINAL.md 详细设计"
+      status: done
+      completed_at: 2024-12-30
+
+    - id: DESIGN-002
+      task: "设计 useDashboard composable"
+      status: done
+      completed_at: 2024-12-30
+      notes: "已在 40_DESIGN_FINAL.md 第 3 节定义"
+
+    - id: DESIGN-003
+      task: "设计组件接口和数据流"
+      status: done
+      completed_at: 2024-12-30
+      notes: "已在 40_DESIGN_FINAL.md 第 2, 4, 5 节定义"
+
+    - id: DESIGN-004
+      task: "Architect 审批 Design Gate"
+      status: done
+      completed_at: 2024-12-30
+      notes: "Expert Review REVISE → 修复 5 个 WARN 问题后通过"
+
+# ============================================================
+# Phase 5: Code（开发实现）- 进行中
+# ============================================================
+phase_5_code:
+  status: wip
+  tasks:
+    - id: CODE-001
+      task: "实现 DashboardView.vue 主视图"
+      status: pending
+
+    - id: CODE-002
+      task: "实现 GanttChart.vue 甘特图组件"
+      status: pending
+
+    - id: CODE-003
+      task: "实现 FeatureCard.vue 卡片组件"
+      status: pending
+
+    - id: CODE-004
+      task: "实现 DailyStandup.vue 面板"
+      status: pending
+
+    - id: CODE-005
+      task: "实现 useDashboard.ts composable"
+      status: pending
+
+    - id: CODE-006
+      task: "配置路由，设置 Dashboard 为默认首页"
+      status: pending
+
+    - id: CODE-007
+      task: "集成 Schema Discovery 扫描多 Feature"
+      status: pending
+
+# ============================================================
+# Phase 6: Test（测试验证）- 待开始
+# ============================================================
+phase_6_test:
+  status: pending
+  tasks:
+    - id: TEST-001
+      task: "Dashboard 视图功能测试"
+      status: pending
+
+    - id: TEST-002
+      task: "Feature 点击跳转测试"
+      status: pending
+
+    - id: TEST-003
+      task: "多 Feature 扫描测试"
+      status: pending
+
+# ============================================================
+# Claude Code 断点恢复信息
+# ============================================================
+cc_checkpoint:
+  session_id: "cc-2024-12-30-dashboard-view"
+  last_file_edited: "docs/dashboard-view/40_DESIGN_FINAL.md"
+  last_action: "修复 Expert Review WARN 问题，通过 Design Gate"
+  next_step: "开始 Code 阶段，按 40_DESIGN_FINAL.md 第 9 节任务拆分依次实现"
+  context_files:
+    - "docs/dashboard-view/40_DESIGN_FINAL.md"
+    - "docs/dashboard-view/90_PROGRESS_LOG.yaml"
+    - "docs/dashboard-view/21_UI_FLOW_SPEC.md"
+
+# ============================================================
+# 统计信息
+# ============================================================
+stats:
+  total_tasks: 22
+  done: 11
+  wip: 0
+  pending: 11
+  completion_rate: "50%"
+  next_milestone: "完成 Phase 5 Code 开发任务"

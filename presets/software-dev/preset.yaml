@@ -1,0 +1,155 @@
+# HA Loop Desk - Software Development Preset
+# 软件开发场景预设配置
+
+meta:
+  name: "software-dev"
+  display_name: "软件开发"
+  description: "适用于软件开发项目的人机协作工作流"
+  version: "1.0.0"
+  author: "HA Loop Desk Team"
+
+# 阶段定义
+phases:
+  - id: 1
+    name: "Kickoff"
+    display_name: "启动"
+    description: "项目启动，明确目标和范围"
+    color: "#409EFF"
+    required_outputs:
+      - "10_CONTEXT.md"
+    gate_rules:
+      auto_check:
+        - type: "file_exists"
+          path: "10_CONTEXT.md"
+        - type: "content_check"
+          file: "10_CONTEXT.md"
+          contains: ["目标", "范围"]
+      approvers: ["PM"]
+
+  - id: 2
+    name: "Spec"
+    display_name: "规格"
+    description: "需求规格定义，包括 API 或 UI 流程"
+    color: "#67C23A"
+    required_outputs:
+      - "20_API_SPEC.md"
+      - "21_UI_FLOW_SPEC.md"
+    gate_rules:
+      auto_check:
+        - type: "file_exists_any"
+          paths: ["20_API_SPEC.md", "21_UI_FLOW_SPEC.md"]
+      approvers: ["PM", "Architect"]
+
+  - id: 3
+    name: "Demo"
+    display_name: "演示"
+    description: "交互原型演示，验证用户体验"
+    color: "#E6A23C"
+    optional: true
+    skip_condition: "feature_profile.has_ui == false"
+    required_outputs:
+      - "_demos/*.html"
+    gate_rules:
+      auto_check:
+        - type: "glob_match"
+          pattern: "_demos/*.html"
+      approvers: ["PM"]
+
+  - id: 4
+    name: "Design"
+    display_name: "设计"
+    description: "技术方案设计，架构确认"
+    color: "#F56C6C"
+    required_outputs:
+      - "40_DESIGN_FINAL.md"
+    gate_rules:
+      auto_check:
+        - type: "file_exists"
+          path: "40_DESIGN_FINAL.md"
+        - type: "content_check"
+          file: "40_DESIGN_FINAL.md"
+          contains: ["架构", "接口"]
+      approvers: ["Architect"]
+
+  - id: 5
+    name: "Code"
+    display_name: "编码"
+    description: "代码实现"
+    color: "#909399"
+    required_outputs:
+      - "src/**/*.{ts,vue,js}"
+    gate_rules:
+      auto_check:
+        - type: "custom"
+          check: "code_implements_design"
+      approvers: ["Developer"]
+
+  - id: 6
+    name: "Test"
+    display_name: "测试"
+    description: "测试验证"
+    color: "#00D1B2"
+    required_outputs:
+      - "60_TEST_PLAN.md"
+      - "test/**/*.spec.ts"
+    gate_rules:
+      auto_check:
+        - type: "test_pass"
+          command: "npm run test"
+      approvers: ["QA"]
+
+  - id: 7
+    name: "Deploy"
+    display_name: "部署"
+    description: "上线发布"
+    color: "#7B68EE"
+    required_outputs:
+      - "70_RELEASE_NOTES.md"
+    gate_rules:
+      auto_check:
+        - type: "file_exists"
+          path: "70_RELEASE_NOTES.md"
+      approvers: ["PM", "DevOps"]
+
+# 文档模板
+templates:
+  - id: "context"
+    file: "templates/10_CONTEXT.md"
+    phase: 1
+    description: "功能上下文模板"
+
+  - id: "api_spec"
+    file: "templates/20_API_SPEC.md"
+    phase: 2
+    description: "API 规格模板"
+
+  - id: "ui_spec"
+    file: "templates/21_UI_FLOW_SPEC.md"
+    phase: 2
+    description: "UI 流程规格模板"
+
+  - id: "design"
+    file: "templates/40_DESIGN_FINAL.md"
+    phase: 4
+    description: "设计文档模板"
+
+  - id: "test_plan"
+    file: "templates/60_TEST_PLAN.md"
+    phase: 6
+    description: "测试计划模板"
+
+  - id: "release_notes"
+    file: "templates/70_RELEASE_NOTES.md"
+    phase: 7
+    description: "发布说明模板"
+
+# 进度日志配置
+progress_log:
+  file: "90_PROGRESS_LOG.yaml"
+  auto_update: true
+
+# Gate 配置
+gate:
+  config_file: "PHASE_GATE.yaml"
+  status_file: "PHASE_GATE_STATUS.yaml"
+  strict_mode: true

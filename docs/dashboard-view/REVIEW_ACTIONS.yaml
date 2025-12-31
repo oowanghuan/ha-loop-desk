@@ -1,0 +1,114 @@
+# REVIEW_ACTIONS.yaml
+# Expert Review 结果 - 权威来源
+# 功能：dashboard-view
+# 评审阶段：Phase 4 Design
+
+meta:
+  feature: "dashboard-view"
+  phase: 4
+  target_file: "40_DESIGN_FINAL.md"
+  reviewed_at: "2024-12-30T21:10:00+08:00"
+  reviewer: "claude/opus-4"
+
+verdict: REVISE
+
+summary:
+  total_issues: 6
+  block_count: 0
+  warn_count: 5
+  info_count: 1
+
+actions:
+  - id: "WARN-001"
+    severity: warn
+    category: clarity
+    target: "40_DESIGN_FINAL.md"
+    location: "Section 3.1 useDashboard.ts, Lines 342-346"
+    issue: "standup computed 逻辑未实现，仅有注释占位"
+    evidence: |
+      for (const feature of store.features) {
+        // 提取今日完成的任务
+        // 提取阻塞任务
+        // 提取明日计划
+      }
+    impact: "开发时缺少明确实现指导，可能导致实现不一致"
+    fix: "补充完整的 standup 数据提取逻辑，包括日期判断、状态过滤等"
+    owner_role: Developer
+
+  - id: "WARN-002"
+    severity: warn
+    category: design
+    target: "40_DESIGN_FINAL.md"
+    location: "Section 2.1 DashboardView.vue template"
+    issue: "模板未处理 loading 和 error 状态"
+    evidence: "useDashboard 返回 loading 和 error，但模板中未使用"
+    impact: "用户体验差，加载时无反馈，错误时无提示"
+    fix: |
+      在模板中添加：
+      - <div v-if="loading">加载中...</div>
+      - <div v-else-if="error">{{ error }}</div>
+      - <template v-else>...正常内容...</template>
+    owner_role: Developer
+
+  - id: "WARN-003"
+    severity: warn
+    category: consistency
+    target: "40_DESIGN_FINAL.md"
+    location: "Section 7 路由配置"
+    issue: "路由参数 featureId 与现有 WorkspaceView 的 projectPath 不兼容"
+    evidence: "新路由 /workspace/:featureId，但现有 WorkspaceView 可能使用不同的参数"
+    impact: "集成时可能需要修改 WorkspaceView 的 props 接收方式"
+    fix: "在设计文档中明确说明 WorkspaceView 需要的修改：props 从 projectPath 改为 featureId"
+    owner_role: Architect
+
+  - id: "WARN-004"
+    severity: warn
+    category: design
+    target: "40_DESIGN_FINAL.md"
+    location: "Section 5.2 scanFeatures 函数"
+    issue: "YAML 解析缺少 try-catch 错误处理"
+    evidence: |
+      const content = await fs.readFile(progressLogPath, 'utf-8')
+      const parsed = yaml.parse(content)
+    impact: "单个 YAML 解析失败会中断整个扫描过程"
+    fix: |
+      添加 try-catch：
+      try {
+        const parsed = yaml.parse(content)
+        features.push({ id: entry.name, ...parsed })
+      } catch (e) {
+        console.warn(`Failed to parse ${progressLogPath}:`, e)
+        // 可选：添加到 warnings 列表
+      }
+    owner_role: Developer
+
+  - id: "WARN-005"
+    severity: warn
+    category: clarity
+    target: "40_DESIGN_FINAL.md"
+    location: "Section 5.2 Handler 实现"
+    issue: "extractPhases 和 getPhaseNameById 函数未定义"
+    evidence: |
+      currentPhaseName: getPhaseNameById(f.meta?.current_phase || 1),
+      phases: extractPhases(f),
+    impact: "开发时需要自行推断这些函数的实现"
+    fix: "补充这两个工具函数的定义，或引用已有的 shared 模块"
+    owner_role: Developer
+
+  - id: "INFO-001"
+    severity: info
+    category: clarity
+    target: "40_DESIGN_FINAL.md"
+    location: "Section 8 文件结构"
+    issue: "GanttHeader.vue 和 PhaseBar.vue 在文件结构中列出但组件设计章节未定义"
+    evidence: "文件结构列出 GanttHeader.vue、PhaseBar.vue，但第 2 节组件设计未包含"
+    impact: "轻微不一致，不影响实现"
+    fix: "可选：在组件设计章节补充这两个子组件的简要说明"
+    owner_role: Developer
+
+override:
+  enabled: false
+  approved_by: null
+  approved_at: null
+  reason: null
+  expires_at: null

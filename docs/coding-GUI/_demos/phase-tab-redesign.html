@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phase Tab 重新设计 - Demo</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      padding: 40px;
+      min-height: 100vh;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+      color: #58a6ff;
+    }
+
+    .subtitle {
+      color: #8b949e;
+      margin-bottom: 40px;
+      font-size: 14px;
+    }
+
+    .section {
+      margin-bottom: 50px;
+    }
+
+    .section-title {
+      font-size: 16px;
+      color: #8b949e;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #30363d;
+    }
+
+    .demo-row {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+    }
+
+    .demo-label {
+      font-size: 12px;
+      color: #6e7681;
+      margin-bottom: 8px;
+    }
+
+    /* ==================== 方案 A: 简洁两行 ==================== */
+    .tab-a {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 90px;
+      height: 60px;
+      padding: 8px 16px;
+      border-radius: 10px;
+      border: 2px solid #30363d;
+      background: #21262d;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .tab-a__number {
+      font-size: 22px;
+      font-weight: 700;
+      color: #e6edf3;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tab-a__name {
+      font-size: 12px;
+      color: #8b949e;
+      margin-top: 2px;
+    }
+
+    .tab-a__icon {
+      font-size: 14px;
+    }
+
+    /* Passed */
+    .tab-a.passed {
+      border-color: #3fb950;
+      background: rgba(63, 185, 80, 0.12);
+    }
+    .tab-a.passed .tab-a__number { color: #3fb950; }
+    .tab-a.passed .tab-a__icon { color: #3fb950; }
+
+    /* Current */
+    .tab-a.current {
+      border-color: #58a6ff;
+      background: rgba(88, 166, 255, 0.15);
+    }
+    .tab-a.current .tab-a__number { color: #58a6ff; }
+    .tab-a.current .tab-a__name { color: #58a6ff; }
+
+    /* Progress bar for current */
+    .tab-a__progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 3px;
+      background: #58a6ff;
+      border-radius: 0 0 8px 8px;
+      transition: width 0.3s;
+    }
+
+    /* Locked */
+    .tab-a.locked {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .tab-a.locked .tab-a__icon { color: #6e7681; }
+
+    /* ==================== 方案 B: 横向紧凑 ==================== */
+    .tab-b {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 100px;
+      height: 48px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 2px solid #30363d;
+      background: #21262d;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .tab-b__number {
+      font-size: 20px;
+      font-weight: 700;
+      color: #e6edf3;
+    }
+
+    .tab-b__info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tab-b__name {
+      font-size: 13px;
+      color: #e6edf3;
+      font-weight: 500;
+    }
+
+    .tab-b__status {
+      font-size: 11px;
+      color: #6e7681;
+    }
+
+    .tab-b__icon {
+      margin-left: auto;
+      font-size: 16px;
+    }
+
+    /* Passed */
+    .tab-b.passed {
+      border-color: #3fb950;
+      background: rgba(63, 185, 80, 0.12);
+    }
+    .tab-b.passed .tab-b__icon { color: #3fb950; }
+    .tab-b.passed .tab-b__status { color: #3fb950; }
+
+    /* Current */
+    .tab-b.current {
+      border-color: #58a6ff;
+      background: rgba(88, 166, 255, 0.15);
+    }
+    .tab-b.current .tab-b__number { color: #58a6ff; }
+    .tab-b.current .tab-b__status { color: #58a6ff; }
+
+    /* Locked */
+    .tab-b.locked {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* ==================== 方案 C: 极简圆角 ==================== */
+    .tab-c {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 72px;
+      height: 72px;
+      border-radius: 16px;
+      border: 2px solid #30363d;
+      background: #21262d;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .tab-c__number {
+      font-size: 26px;
+      font-weight: 700;
+      color: #e6edf3;
+    }
+
+    .tab-c__name {
+      font-size: 10px;
+      color: #8b949e;
+      margin-top: 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .tab-c__badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      background: #3fb950;
+      color: #fff;
+    }
+
+    .tab-c__progress-ring {
+      position: absolute;
+      inset: -3px;
+      border-radius: 18px;
+    }
+
+    /* Passed */
+    .tab-c.passed {
+      border-color: #3fb950;
+      background: rgba(63, 185, 80, 0.12);
+    }
+    .tab-c.passed .tab-c__number { color: #3fb950; }
+
+    /* Current */
+    .tab-c.current {
+      border-color: #58a6ff;
+      background: rgba(88, 166, 255, 0.15);
+    }
+    .tab-c.current .tab-c__number { color: #58a6ff; }
+    .tab-c.current .tab-c__name { color: #58a6ff; }
+
+    /* Locked */
+    .tab-c.locked {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* ==================== 方案 D: 连接线样式 (推荐) ==================== */
+    .phase-nav-d {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      padding: 16px 20px;
+      background: #161b22;
+    }
+
+    .tab-d-wrapper {
+      display: flex;
+      align-items: center;
+    }
+
+    .tab-d-connector {
+      width: 24px;
+      height: 2px;
+      background: #30363d;
+    }
+
+    .tab-d-connector.completed {
+      background: #3fb950;
+    }
+
+    .tab-d {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 80px;
+      height: 56px;
+      padding: 6px 14px;
+      border-radius: 10px;
+      border: 2px solid #30363d;
+      background: #21262d;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .tab-d__top {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .tab-d__number {
+      font-size: 20px;
+      font-weight: 700;
+      color: #e6edf3;
+    }
+
+    .tab-d__icon {
+      font-size: 14px;
+    }
+
+    .tab-d__name {
+      font-size: 11px;
+      color: #8b949e;
+      margin-top: 2px;
+    }
+
+    .tab-d__percent {
+      font-size: 10px;
+      color: #6e7681;
+      margin-top: 1px;
+    }
+
+    /* Passed - 只显示数字+勾 */
+    .tab-d.passed {
+      border-color: #3fb950;
+      background: rgba(63, 185, 80, 0.12);
+    }
+    .tab-d.passed .tab-d__number { color: #3fb950; }
+    .tab-d.passed .tab-d__icon { color: #3fb950; }
+    .tab-d.passed .tab-d__percent { display: none; }
+
+    /* Current - 显示进度 */
+    .tab-d.current {
+      border-color: #58a6ff;
+      background: rgba(88, 166, 255, 0.15);
+      min-width: 90px;
+    }
+    .tab-d.current .tab-d__number { color: #58a6ff; }
+    .tab-d.current .tab-d__name { color: #58a6ff; }
+    .tab-d.current .tab-d__percent { color: #58a6ff; }
+
+    /* Pending - 简洁灰色 */
+    .tab-d.pending .tab-d__percent { display: none; }
+
+    /* Locked */
+    .tab-d.locked {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .tab-d.locked .tab-d__percent { display: none; }
+
+    /* ==================== 完整导航条预览 ==================== */
+    .full-nav {
+      display: flex;
+      gap: 12px;
+      padding: 14px 20px;
+      background: #161b22;
+      border-radius: 12px;
+      margin-top: 10px;
+    }
+
+    /* Icons (using text for demo) */
+    .icon-check::before { content: "✓"; }
+    .icon-loading::before { content: "◔"; }
+    .icon-lock::before { content: "🔒"; font-size: 12px; }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .icon-loading {
+      animation: spin 1s linear infinite;
+      display: inline-block;
+    }
+
+    /* 设计说明 */
+    .design-notes {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 20px;
+    }
+
+    .design-notes h3 {
+      font-size: 14px;
+      color: #58a6ff;
+      margin-bottom: 12px;
+    }
+
+    .design-notes ul {
+      font-size: 13px;
+      color: #8b949e;
+      padding-left: 20px;
+    }
+
+    .design-notes li {
+      margin-bottom: 6px;
+    }
+
+    .design-notes strong {
+      color: #e6edf3;
+    }
+  </style>
+</head>
+<body>
+  <h1>Phase Tab 重新设计</h1>
+  <p class="subtitle">根据不同状态显示不同信息，减少视觉负担</p>
+
+  <!-- 方案 A -->
+  <div class="section">
+    <div class="section-title">方案 A: 简洁两行 (数字 + 名称)</div>
+    <div class="demo-row">
+      <div>
+        <div class="demo-label">已完成 (passed)</div>
+        <div class="tab-a passed">
+          <div class="tab-a__number">1 <span class="tab-a__icon icon-check"></span></div>
+          <div class="tab-a__name">Kickoff</div>
+        </div>
+      </div>
+      <div>
+        <div class="demo-label">当前 (current) 40%</div>
+        <div class="tab-a current">
+          <div class="tab-a__number">2 <span class="tab-a__icon icon-loading"></span></div>
+          <div class="tab-a__name">Spec</div>
+          <div class="tab-a__progress" style="width: 40%"></div>
+        </div>
+      </div>
+      <div>
+        <div class="demo-label">待开始 (pending)</div>
+        <div class="tab-a">
+          <div class="tab-a__number">3</div>
+          <div class="tab-a__name">Demo</div>
+        </div>
+      </div>
+      <div>
+        <div class="demo-label">锁定 (locked)</div>
+        <div class="tab-a locked">
+          <div class="tab-a__number">4 <span class="tab-a__icon icon-lock"></span></div>
+          <div class="tab-a__name">Design</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="design-notes">
+      <h3>设计说明</h3>
+      <ul>
+        <li><strong>passed:</strong> 显示数字 + 勾号 + 名称，不显示 100%（已完成不需要）</li>
+        <li><strong>current:</strong> 显示数字 + 加载图标 + 名称，底部进度条显示百分比</li>
+        <li><strong>pending:</strong> 只显示数字 + 名称，简洁等待</li>
+        <li><strong>locked:</strong> 显示数字 + 锁图标 + 名称，整体半透明</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 方案 B -->
+  <div class="section">
+    <div class="section-title">方案 B: 横向紧凑 (适合更多 Phase)</div>
+    <div class="demo-row">
+      <div>
+        <div class="demo-label">已完成</div>
+        <div class="tab-b passed">
+          <div class="tab-b__number">1</div>
+          <div class="tab-b__info">
+            <div class="tab-b__name">Kickoff</div>
+            <div class="tab-b__status">完成</div>
+          </div>
+          <span class="tab-b__icon icon-check"></span>
+        </div>
+      </div>
+      <div>
+        <div class="demo-label">当前</div>
+        <div class="tab-b current">
+          <div class="tab-b__number">2</div>
+          <div class="tab-b__info">
+            <div class="tab-b__name">Spec</div>
+            <div class="tab-b__status">40%</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="demo-label">待开始</div>
+        <div class="tab-b">
+          <div class="tab-b__number">3</div>
+          <div class="tab-b__info">
+            <div class="tab-b__name">Demo</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="demo-label">锁定</div>
+        <div class="tab-b locked">
+          <div class="tab-b__number">4</div>
+          <div class="tab-b__info">
+            <div class="tab-b__name">Design</div>
+          </div>
+          <span class="tab-b__icon icon-lock"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 方案 C -->
+  <div class="section">
+    <div class="section-title">方案 C: 极简方块 (最小化信息)</div>
+    <div class="demo-row">
+      <div>
+        <div class="demo-label">已完成</div>
+        <div class="tab-c passed">
+          <div class="tab-c__number">1</div>
+          <div class="tab-c__name">Kickoff</div>
+          <div class="tab-c__badge">✓</div>
+        </div>
+      </div>
+      <div>
+        <div class="demo-label">当前 40%</div>
+        <div class="tab-c current">
+          <div class="tab-c__number">2</div>
+          <div class="tab-c__name">Spec</div>
+        </div>
+      </div>
+      <div>
+        <div class="demo-label">待开始</div>
+        <div class="tab-c">
+          <div class="tab-c__number">3</div>
+          <div class="tab-c__name">Demo</div>
+        </div>
+      </div>
+      <div>
+        <div class="demo-label">锁定</div>
+        <div class="tab-c locked">
+          <div class="tab-c__number">4</div>
+          <div class="tab-c__name">Design</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 方案 D (推荐) -->
+  <div class="section">
+    <div class="section-title">方案 D: 智能显示 (推荐) - 根据状态动态显示信息</div>
+    <div class="demo-row">
+      <div>
+        <div class="demo-label">已完成 - 只显示勾</div>
+        <div class="tab-d passed">
+          <div class="tab-d__top">
+            <span class="tab-d__number">1</span>
+            <span class="tab-d__icon icon-check"></span>
+          </div>
+          <div class="tab-d__name">Kickoff</div>
+        </div>
+      </div>
+      <div>
+        <div class="demo-label">当前 - 显示进度</div>
+        <div class="tab-d current">
+          <div class="tab-d__top">
+            <span class="tab-d__number">2</span>
+            <span class="tab-d__icon icon-loading"></span>
+          </div>
+          <div class="tab-d__name">Spec</div>
+          <div class="tab-d__percent">40%</div>
+        </div>
+      </div>
+      <div>
+        <div class="demo-label">待开始 - 简洁</div>
+        <div class="tab-d pending">
+          <div class="tab-d__top">
+            <span class="tab-d__number">3</span>
+          </div>
+          <div class="tab-d__name">Demo</div>
+        </div>
+      </div>
+      <div>
+        <div class="demo-label">锁定</div>
+        <div class="tab-d locked">
+          <div class="tab-d__top">
+            <span class="tab-d__number">4</span>
+            <span class="tab-d__icon icon-lock"></span>
+          </div>
+          <div class="tab-d__name">Design</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="design-notes">
+      <h3>方案 D 设计理念</h3>
+      <ul>
+        <li><strong>passed:</strong> 勾号已经说明完成，不需要再显示 100%</li>
+        <li><strong>current:</strong> 这是用户最关注的，显示进度百分比</li>
+        <li><strong>pending:</strong> 还没开始，0% 没有意义，不显示</li>
+        <li><strong>locked:</strong> 锁住的阶段不需要显示进度</li>
+        <li>信息量：passed < pending < locked < current</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 完整导航条预览 -->
+  <div class="section">
+    <div class="section-title">完整导航条预览 (方案 D)</div>
+    <div class="full-nav">
+      <div class="tab-d passed">
+        <div class="tab-d__top">
+          <span class="tab-d__number">1</span>
+          <span class="tab-d__icon icon-check"></span>
+        </div>
+        <div class="tab-d__name">Kickoff</div>
+      </div>
+      <div class="tab-d passed">
+        <div class="tab-d__top">
+          <span class="tab-d__number">2</span>
+          <span class="tab-d__icon icon-check"></span>
+        </div>
+        <div class="tab-d__name">Spec</div>
+      </div>
+      <div class="tab-d passed">
+        <div class="tab-d__top">
+          <span class="tab-d__number">3</span>
+          <span class="tab-d__icon icon-check"></span>
+        </div>
+        <div class="tab-d__name">Demo</div>
+      </div>
+      <div class="tab-d current">
+        <div class="tab-d__top">
+          <span class="tab-d__number">4</span>
+          <span class="tab-d__icon icon-loading"></span>
+        </div>
+        <div class="tab-d__name">Design</div>
+        <div class="tab-d__percent">65%</div>
+      </div>
+      <div class="tab-d pending">
+        <div class="tab-d__top">
+          <span class="tab-d__number">5</span>
+        </div>
+        <div class="tab-d__name">Code</div>
+      </div>
+      <div class="tab-d pending">
+        <div class="tab-d__top">
+          <span class="tab-d__number">6</span>
+        </div>
+        <div class="tab-d__name">Test</div>
+      </div>
+      <div class="tab-d locked">
+        <div class="tab-d__top">
+          <span class="tab-d__number">7</span>
+          <span class="tab-d__icon icon-lock"></span>
+        </div>
+        <div class="tab-d__name">Deploy</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
