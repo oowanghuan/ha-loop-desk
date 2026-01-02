@@ -1,0 +1,129 @@
+# 90_PROGRESS_LOG.yaml
+# 功能模块：Project Planning
+# 最后更新：2024-12-31T22:30:00+08:00
+
+meta:
+  feature: project-planning
+  feature_name: "Project Planning - 项目规划功能"
+  current_phase: 1  # Kickoff
+  status: wip
+  owner: "待定"
+  started_at: "2024-12-31"
+  last_updated: "2024-12-31T22:30:00+08:00"
+
+# ============================================================
+# Phase 1: Kickoff（功能启动）- 进行中
+# ============================================================
+phase_1_kickoff:
+  status: wip
+  tasks:
+    - id: KICK-001
+      task: "创建功能目录 docs/project-planning/"
+      status: done
+      completed_at: "2024-12-31"
+
+    - id: KICK-002
+      task: "编写 10_CONTEXT.md 功能上下文"
+      status: done
+      completed_at: "2024-12-31"
+
+    - id: KICK-003
+      task: "创建 90_PROGRESS_LOG.yaml"
+      status: done
+      completed_at: "2024-12-31"
+
+    - id: KICK-004
+      task: "细化架构师视角的功能需求"
+      status: pending
+      notes: "需要明确：模块划分图、依赖分析、技术选型的具体交互"
+
+    - id: KICK-005
+      task: "细化 PM 视角的功能需求"
+      status: pending
+      notes: "需要明确：需求池、优先级排序、派生 feature 的具体流程"
+
+# ============================================================
+# Phase 2: Spec（需求规格）- 待开始
+# ============================================================
+phase_2_spec:
+  status: pending
+  tasks:
+    - id: SPEC-001
+      task: "编写 21_UI_FLOW_SPEC.md - 架构师视图"
+      status: pending
+
+    - id: SPEC-002
+      task: "编写 21_UI_FLOW_SPEC.md - PM 视图"
+      status: pending
+
+    - id: SPEC-003
+      task: "编写 21_UI_FLOW_SPEC.md - Dashboard 增强"
+      status: pending
+
+# ============================================================
+# Phase 3: Demo（原型验证）- 待开始
+# ============================================================
+phase_3_demo:
+  status: pending
+  tasks:
+    - id: DEMO-001
+      task: "架构规划视图原型"
+      status: pending
+
+    - id: DEMO-002
+      task: "PM 需求管理视图原型"
+      status: pending
+
+# ============================================================
+# Phase 4: Design（技术设计）- 待开始
+# ============================================================
+phase_4_design:
+  status: pending
+  tasks:
+    - id: DESIGN-001
+      task: "编写 40_DESIGN_FINAL.md"
+      status: pending
+
+# ============================================================
+# Phase 5: Code（开发实现）- 待开始
+# ============================================================
+phase_5_code:
+  status: pending
+  tasks: []
+
+# ============================================================
+# Phase 6: Test（测试验证）- 待开始
+# ============================================================
+phase_6_test:
+  status: pending
+  tasks: []
+
+# ============================================================
+# Phase 7: Deploy（部署上线）- 待开始
+# ============================================================
+phase_7_deploy:
+  status: pending
+  tasks: []
+
+# ============================================================
+# Claude Code 断点恢复信息
+# ============================================================
+cc_checkpoint:
+  session_id: "cc-2024-12-31-project-planning"
+  last_file_edited: "docs/project-planning/10_CONTEXT.md"
+  last_action: "创建功能目录和初始文档"
+  next_step: "细化架构师和 PM 视角的具体功能需求"
+  context_files:
+    - "docs/project-planning/10_CONTEXT.md"
+    - "docs/project-planning/90_PROGRESS_LOG.yaml"
+
+# ============================================================
+# 统计信息
+# ============================================================
+stats:
+  total_tasks: 10
+  done: 3
+  wip: 0
+  pending: 7
+  completion_rate: "30%"
+  next_milestone: "完成 Kickoff 阶段，进入 Spec"

@@ -1,0 +1,133 @@
+# PHASE_GATE.yaml
+# Phase Gate 规则配置文件
+# 功能模块：project-planning
+
+meta:
+  feature: "project-planning"
+  schema_version: "1.2"
+  created_at: "2024-12-31"
+
+feature_profile:
+  has_ui: true
+  demo_required: true
+
+# ============================================================
+# Phase 1: Kickoff Gate
+# ============================================================
+phase_1:
+  name: "Kickoff"
+  required_outputs:
+    - path: "10_CONTEXT.md"
+      description: "功能上下文文档"
+  quality_checks:
+    - id: context_has_goals
+      description: "CONTEXT 包含明确目标（至少 2 条）"
+    - id: context_has_scope
+      description: "CONTEXT 包含范围定义（In/Out of Scope）"
+  approvers:
+    - role: PM
+      required: true
+
+# ============================================================
+# Phase 2: Spec Gate
+# ============================================================
+phase_2:
+  name: "Spec"
+  required_outputs:
+    - path: "21_UI_FLOW_SPEC.md"
+      description: "UI 流程规格文档"
+  quality_checks:
+    - id: spec_has_pages
+      description: "SPEC 包含页面/视图定义"
+    - id: spec_has_interactions
+      description: "SPEC 包含交互流程"
+    - id: spec_has_data_model
+      description: "SPEC 包含数据模型定义"
+  approvers:
+    - role: PM
+      required: true
+    - role: Architect
+      required: true
+
+# ============================================================
+# Phase 3: Demo Gate
+# ============================================================
+phase_3:
+  name: "Demo"
+  required_outputs:
+    - path: "_demos/"
+      description: "Demo 原型文件"
+  quality_checks:
+    - id: demo_covers_main_flow
+      description: "Demo 覆盖主要用户流程"
+  approvers:
+    - role: PM
+      required: true
+
+# ============================================================
+# Phase 4: Design Gate
+# ============================================================
+phase_4:
+  name: "Design"
+  required_outputs:
+    - path: "40_DESIGN_FINAL.md"
+      description: "技术设计文档"
+  quality_checks:
+    - id: design_has_architecture
+      description: "设计包含架构图"
+    - id: design_has_components
+      description: "设计包含组件划分"
+    - id: design_has_data_flow
+      description: "设计包含数据流说明"
+  approvers:
+    - role: Architect
+      required: true
+
+# ============================================================
+# Phase 5: Code Gate
+# ============================================================
+phase_5:
+  name: "Code"
+  required_outputs:
+    - path: "src/"
+      description: "源代码实现"
+  quality_checks:
+    - id: code_builds
+      description: "代码可以正常构建"
+    - id: code_matches_design
+      description: "代码符合设计文档"
+  approvers:
+    - role: Developer
+      required: true
+
+# ============================================================
+# Phase 6: Test Gate
+# ============================================================
+phase_6:
+  name: "Test"
+  required_outputs:
+    - path: "60_TEST_REPORT.md"
+      description: "测试报告"
+  quality_checks:
+    - id: tests_pass
+      description: "所有测试通过"
+    - id: coverage_sufficient
+      description: "测试覆盖率达标"
+  approvers:
+    - role: QA
+      required: true
+
+# ============================================================
+# Phase 7: Deploy Gate
+# ============================================================
+phase_7:
+  name: "Deploy"
+  required_outputs:
+    - path: "70_RELEASE_NOTES.md"
+      description: "发布说明"
+  quality_checks:
+    - id: release_tested
+      description: "Release 版本已测试"
+  approvers:
+    - role: PM
+      required: true

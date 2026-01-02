@@ -1,0 +1,63 @@
+# PHASE_GATE_STATUS.yaml
+# Phase Gate 运行态文件
+# 功能模块：project-planning
+
+meta:
+  feature: "project-planning"
+  last_updated: "2024-12-31T22:30:00+08:00"
+
+# ============================================================
+# Phase 1: Kickoff Gate Status
+# ============================================================
+phase_1:
+  gate_state: pending  # pending | passed | blocked | skipped
+  approvals: []
+  check_history: []
+
+# ============================================================
+# Phase 2: Spec Gate Status
+# ============================================================
+phase_2:
+  gate_state: pending
+  approvals: []
+  check_history: []
+
+# ============================================================
+# Phase 3: Demo Gate Status
+# ============================================================
+phase_3:
+  gate_state: pending
+  approvals: []
+  check_history: []
+
+# ============================================================
+# Phase 4: Design Gate Status
+# ============================================================
+phase_4:
+  gate_state: pending
+  approvals: []
+  check_history: []
+
+# ============================================================
+# Phase 5: Code Gate Status
+# ============================================================
+phase_5:
+  gate_state: pending
+  approvals: []
+  check_history: []
+
+# ============================================================
+# Phase 6: Test Gate Status
+# ============================================================
+phase_6:
+  gate_state: pending
+  approvals: []
+  check_history: []
+
+# ============================================================
+# Phase 7: Deploy Gate Status
+# ============================================================
+phase_7:
+  gate_state: pending
+  approvals: []
+  check_history: []
