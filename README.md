@@ -107,6 +107,11 @@ AI 会读取 [CLAUDE_INIT_HALOOP.md](./CLAUDE_INIT_HALOOP.md) 并自动完成配
 | macOS (Intel) | `HA.Loop.Desk-x.x.x-x64.dmg` |
 | Windows | `HA.Loop.Desk-x.x.x-setup.exe` |
 
+> **macOS 用户注意**：首次打开可能提示「已损坏，无法打开」，这是因为应用未签名。运行以下命令解除限制：
+> ```bash
+> xattr -cr /Applications/HA\ Loop\ Desk.app
+> ```
+
 **使用流程**：
 
 1. **安装并启动 HA Loop Desk**
