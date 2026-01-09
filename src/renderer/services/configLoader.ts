@@ -33,8 +33,8 @@ import {
 // ============================================================
 
 const CONFIG_PATHS = {
-  workflowTemplate: 'CC_COLLABORATION/00_system/WORKFLOW_TEMPLATE.yaml',
-  phaseGate: 'CC_COLLABORATION/07_phase_gate/PHASE_GATE.yaml',
+  workflowTemplate: 'CC_COLLABORATION/_gui_config/WORKFLOW_TEMPLATE.yaml',
+  phaseGate: 'CC_COLLABORATION/_gui_config/PHASE_GATE.yaml',
   toolsDir: 'CC_COLLABORATION/05_tools',
   progressLog: (featureId: string) => `docs/${featureId}/90_PROGRESS_LOG.yaml`,
   gateStatus: (featureId: string) => `docs/${featureId}/PHASE_GATE_STATUS.yaml`,
